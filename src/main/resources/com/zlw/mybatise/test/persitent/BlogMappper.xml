@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zlw.mybatise.test.persitent.BlogMapper">
 
-   <!-- <cache></cache>-->
+    <!-- <cache></cache>-->
 
     <resultMap type="com.zlw.mybatise.test.domain.Blog" id="blogMap">
         <id column="id" property="id"/>
@@ -13,25 +13,31 @@
         <result column="roundingMode" property="roundingMode"/>-->
     </resultMap>
 
+    <sql id="blogColumns">
+        ${alias}.id as id,
+        ${alias}.title as title,
+        ${alias}.author_id as authorId
+    </sql>
+
     <!--
-        flushCache  清除缓存和二级缓存
+        flushCache  1清除缓存和二级缓存
         useCache 本条语句结果会被二级缓存
         statementType  STATEMENT，PREPARED 或 CALLABLE 让 MyBatis 分别使用 Statement，PreparedStatement 或 CallableStatement
 
     -->
-   <!-- <select
-            id="selectPerson"
-            parameterType="int"
-            parameterMap="deprecated"
-            resultType="hashmap"
-            resultMap="personResultMap"
-            flushCache="false"
-            useCache="true"
-            timeout="10000"
-            fetchSize="256"
-            statementType="PREPARED"
-            resultSetType="FORWARD_ONLY">
-    </select>-->
+    <!-- <select
+             id="selectPerson"
+             parameterType="int"
+             parameterMap="deprecated"
+             resultType="hashmap"
+             resultMap="personResultMap"
+             flushCache="false"
+             useCache="true"
+             timeout="10000"
+             fetchSize="256"
+             statementType="PREPARED"
+             resultSetType="FORWARD_ONLY">
+     </select>-->
 
     <select id="listBlogs" resultMap="blogMap">
         select * from blog
@@ -41,12 +47,67 @@
         select * from Blog where id = #{id}
     </select>
 
+    <select id="listBlogsBySqlGram" resultType="Blog">
+        select
+        <include refid="blogColumns"><property name="alias" value="b"/></include>
+        from blog b
+    </select>
+
+    <sql id="sometable">
+        ${prefix}log ${alias}
+    </sql>
+
+    <sql id="someinclude">
+        from
+        <include refid="${include_target}"/>
+    </sql>
+
+
+    <select id="listBlogsBySqlIncludGram" resultType="Blog">
+        select
+        <include refid="blogColumns"><property name="alias" value="b"/></include>
+        <include refid="someinclude">
+            <property name="prefix" value="b"/>
+            <property name="alias" value="b"/>
+            <property name="include_target" value="sometable"/>
+        </include>
+    </select>
+
+
+    <!--
+        useGeneratedKeys MyBatis 使用 JDBC 的 getGeneratedKeys 方法来取出由数据库内部生成的主键
+        keyProperty  MyBatis 会通过 getGeneratedKeys 的返回值或者通过 insert 语句的 selectKey 子元素设置它的键值，默认：unset。如果希望得到多个生成的列，也可以是逗号分隔的属性名称列表
+        keyColumn 通过生成的键值设置表中的列名，这个设置仅在某些数据库（像 PostgreSQL）是必须的，当主键列不是表中的第一列的时候需要设置。如果希望得到多个生成的列，也可以是逗号分隔的属性名称列表。
+    -->
+    <!--<insert
+            id="insertAuthor"
+            parameterType="domain.blog.Author"
+            flushCache="true"
+            statementType="PREPARED"
+            keyProperty=""
+            keyColumn=""
+            useGeneratedKeys=""
+            timeout="20">-->
     <insert id="insertBlog" parameterType="Blog" useGeneratedKeys="true"
             keyProperty="id">
       insert into blog (id, title,author_id) values (
 	    	#{id}, #{title}, #{authorId}
 	    )
     </insert>
+
+    <insert id="insertBlogBySelectKey" parameterType="Blog"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        <selectKey
+                keyProperty="id"
+                resultType="int"
+                order="BEFORE"
+                statementType="PREPARED"/>
+        insert into blog (id, title,author_id) values (
+        #{id}, #{title}, #{authorId}
+        )
+    </insert>
+
 
     <update id="updateBlog" parameterType="Blog">
         update blog set
@@ -55,138 +116,135 @@
     </update>
 
 
-
-
     <!--<cache-ref namespace="c"></cache-ref>-->
-   <!-- <resultMap id="" type="">
+    <!-- <resultMap id="" type="">
 
-    </resultMap>
-    <sql id="">
+     </resultMap>
+     <sql id="">
 
-    </sql>
-    <update id="">
-        #{height,javaType=double,jdbcType=NUMERIC,numericScale=2},
-        #{age,javaType=int,jdbcType=NUMERIC,typeHandler=MyTypeHandler},
-        #{department, mode=OUT, jdbcType=CURSOR, javaType=ResultSet, resultMap=departmentResultMap}-&#45;&#45;???????????
-        #{middleInitial, mode=OUT, jdbcType=STRUCT, jdbcTypeName=MY_TYPE, resultMap=departmentResultMap}
-    </update>
-    <delete id=""></delete>
-    <insert id="">
-        <selectKey
-                keyProperty="id"
-                resultType="int"
-                order="BEFORE"
-                statementType="PREPARED"></selectKey>
-    </insert>
-    <select id="selectBlog" resultType="Blog">
-        select * from Blog where id = #{id}
-    </select>
+     </sql>
+     <update id="">
+         #{height,javaType=double,jdbcType=NUMERIC,numericScale=2},
+         #{age,javaType=int,jdbcType=NUMERIC,typeHandler=MyTypeHandler},
+         #{department, mode=OUT, jdbcType=CURSOR, javaType=ResultSet, resultMap=departmentResultMap}-&#45;&#45;???????????
+         #{middleInitial, mode=OUT, jdbcType=STRUCT, jdbcTypeName=MY_TYPE, resultMap=departmentResultMap}
+     </update>
+     <delete id=""></delete>
+     <insert id="">
+         <selectKey
+                 keyProperty="id"
+                 resultType="int"
+                 order="BEFORE"
+                 statementType="PREPARED"></selectKey>
+     </insert>
+     <select id="selectBlog" resultType="Blog">
+         select * from Blog where id = #{id}
+     </select>
 
-    <select id="selectPerson" parameterType="int" resultType="hashmap">
-        SELECT * FROM PERSON WHERE ID = #{id}
-    </select>
-
-
+     <select id="selectPerson" parameterType="int" resultType="hashmap">
+         SELECT * FROM PERSON WHERE ID = #{id}
+     </select>
 
 
 
-    <sql id="userColumns"> ${alias}.id,${alias}.username,${alias}.password </sql>
-
-    <select id="selectUsers" resultType="map">
-        select
-        <include refid="userColumns"><property name="alias" value="t1"/></include>,
-        <include refid="userColumns"><property name="alias" value="t2"/></include>
-        from some_table t1
-        cross join some_table t2
-    </select>
 
 
-    <sql id="sometable">
-        ${prefix}Table
-    </sql>
+     <sql id="userColumns"> ${alias}.id,${alias}.username,${alias}.password </sql>
 
-    <sql id="someinclude">
-        from
-        <include refid="${include_target}"/>
-    </sql>
-
-    <select id="select" resultType="map">
-        select
-        field1, field2, field3
-        <include refid="someinclude">
-            <property name="prefix" value="Some"/>
-            <property name="include_target" value="sometable"/>
-        </include>
-    </select>
+     <select id="selectUsers" resultType="map">
+         select
+         <include refid="userColumns"><property name="alias" value="t1"/></include>,
+         <include refid="userColumns"><property name="alias" value="t2"/></include>
+         from some_table t1
+         cross join some_table t2
+     </select>
 
 
-    <select id="selectBlogDetails" resultMap="detailedBlogResultMap">
-        select
-        B.id as blog_id,
-        B.title as blog_title,
-        B.author_id as blog_author_id,
-        A.id as author_id,
-        A.username as author_username,
-        A.password as author_password,
-        A.email as author_email,
-        A.bio as author_bio,
-        A.favourite_section as author_favourite_section,
-        P.id as post_id,
-        P.blog_id as post_blog_id,
-        P.author_id as post_author_id,
-        P.created_on as post_created_on,
-        P.section as post_section,
-        P.subject as post_subject,
-        P.draft as draft,
-        P.body as post_body,
-        C.id as comment_id,
-        C.post_id as comment_post_id,
-        C.name as comment_name,
-        C.comment as comment_text,
-        T.id as tag_id,
-        T.name as tag_name
-        from Blog B
-        left outer join Author A on B.author_id = A.id
-        left outer join Post P on B.id = P.blog_id
-        left outer join Comment C on P.id = C.post_id
-        left outer join Post_Tag PT on PT.post_id = P.id
-        left outer join Tag T on PT.tag_id = T.id
-        where B.id = #{id}
-    </select>
+     <sql id="sometable">
+         ${prefix}Table
+     </sql>
+
+     <sql id="someinclude">
+         from
+         <include refid="${include_target}"/>
+     </sql>
+
+     <select id="select" resultType="map">
+         select
+         field1, field2, field3
+         <include refid="someinclude">
+             <property name="prefix" value="Some"/>
+             <property name="include_target" value="sometable"/>
+         </include>
+     </select>
 
 
-    <resultMap id="detailedBlogResultMap" type="Blog">
-        <constructor>
-            <idArg column="blog_id" javaType="int"/>
-            <arg column="username" javaType="String" select="" resultMap="" jdbcType="" typeHandler=""/>
+     <select id="selectBlogDetails" resultMap="detailedBlogResultMap">
+         select
+         B.id as blog_id,
+         B.title as blog_title,
+         B.author_id as blog_author_id,
+         A.id as author_id,
+         A.username as author_username,
+         A.password as author_password,
+         A.email as author_email,
+         A.bio as author_bio,
+         A.favourite_section as author_favourite_section,
+         P.id as post_id,
+         P.blog_id as post_blog_id,
+         P.author_id as post_author_id,
+         P.created_on as post_created_on,
+         P.section as post_section,
+         P.subject as post_subject,
+         P.draft as draft,
+         P.body as post_body,
+         C.id as comment_id,
+         C.post_id as comment_post_id,
+         C.name as comment_name,
+         C.comment as comment_text,
+         T.id as tag_id,
+         T.name as tag_name
+         from Blog B
+         left outer join Author A on B.author_id = A.id
+         left outer join Post P on B.id = P.blog_id
+         left outer join Comment C on P.id = C.post_id
+         left outer join Post_Tag PT on PT.post_id = P.id
+         left outer join Tag T on PT.tag_id = T.id
+         where B.id = #{id}
+     </select>
 
-        </constructor>
-        <result property="title" column="blog_title"/>
-        <association property="author" javaType="Author" column="author_id" jdbcType="" resultMap="" fetchType="lazy" typeHandler="" select="">
-            <id property="id" column="author_id"/>
-            <result property="username" column="author_username"/>
-            <result property="password" column="author_password"/>
-            <result property="email" column="author_email"/>
-            <result property="bio" column="author_bio"/>
-            <result property="favouriteSection" column="author_favourite_section"/>
-        </association>
-        <collection property="posts" ofType="Post">
-            <id property="id" column="post_id"/>
-            <result property="subject" column="post_subject"/>
-            <association property="author" javaType="Author"/>
-            <collection property="comments" ofType="Comment">
-                <id property="id" column="comment_id"/>
-            </collection>
-            <collection property="tags" ofType="Tag" >
-                <id property="id" column="tag_id"/>
-            </collection>
-            <discriminator javaType="int" column="draft">
-                <case value="1" resultType="DraftPost"/>
-            </discriminator>
-        </collection>
 
-    </resultMap>-->
+     <resultMap id="detailedBlogResultMap" type="Blog">
+         <constructor>
+             <idArg column="blog_id" javaType="int"/>
+             <arg column="username" javaType="String" select="" resultMap="" jdbcType="" typeHandler=""/>
 
+         </constructor>
+         <result property="title" column="blog_title"/>
+         <association property="author" javaType="Author" column="author_id" jdbcType="" resultMap="" fetchType="lazy" typeHandler="" select="">
+             <id property="id" column="author_id"/>
+             <result property="username" column="author_username"/>
+             <result property="password" column="author_password"/>
+             <result property="email" column="author_email"/>
+             <result property="bio" column="author_bio"/>
+             <result property="favouriteSection" column="author_favourite_section"/>
+         </association>
+         <collection property="posts" ofType="Post">
+             <id property="id" column="post_id"/>
+             <result property="subject" column="post_subject"/>
+             <association property="author" javaType="Author"/>
+             <collection property="comments" ofType="Comment">
+                 <id property="id" column="comment_id"/>
+             </collection>
+             <collection property="tags" ofType="Tag" >
+                 <id property="id" column="tag_id"/>
+             </collection>
+             <discriminator javaType="int" column="draft">
+                 <case value="1" resultType="DraftPost"/>
+             </discriminator>
+         </collection>
+
+     </resultMap>-->
 
 
 </mapper>

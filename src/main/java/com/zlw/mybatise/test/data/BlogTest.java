@@ -51,14 +51,14 @@ public class BlogTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             List<Blog> blogs = session.selectList("com.zlw.mybatise.test.persitent.BlogMapper.listBlogs");
-            for (Blog blog:blogs){
-                System.out.println("blog:" +blog.getId()+","+blog.getTitle());
+            for (Blog blog : blogs) {
+                System.out.println("blog:" + blog.getId() + "," + blog.getTitle());
                 System.out.println("--------------------------------------");
             }
             return blogs;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             session.close();
         }
         return new ArrayList<Blog>();
@@ -74,22 +74,46 @@ public class BlogTest {
 
         SqlSession session = sqlSessionFactory.openSession();
         try {
-            for (Blog blog:blogs){
-                blog.setTitle(blog.getTitle()+"--update");
-                session.update("com.zlw.mybatise.test.persitent.BlogMapper.updateBlog",blog);
+            for (Blog blog : blogs) {
+                blog.setTitle(blog.getTitle() + "--update");
+                session.update("com.zlw.mybatise.test.persitent.BlogMapper.updateBlog", blog);
             }
             session.commit();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             session.close();
         }
     }
 
 
+    public static List<Blog> listBlogsBySqlGram() {
+        SqlSessionFactory sqlSessionFactory = null;
+        try {
+            sqlSessionFactory = MyBatiseResourseUtil.getSessionFactory();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
+//            List<Blog> blogs = session.selectList("com.zlw.mybatise.test.persitent.BlogMapper.listBlogsBySqlGram");
+            List<Blog> blogs = session.selectList("com.zlw.mybatise.test.persitent.BlogMapper.listBlogsBySqlIncludGram");
+            for (Blog blog : blogs) {
+                System.out.println("blog:" + blog.getId() + "," + blog.getTitle());
+                System.out.println("--------------------------------------");
+            }
+            return blogs;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return new ArrayList<Blog>();
+    }
 
 
-    public static  List<Blog> assembleDatas() {
+    public static List<Blog> assembleDatas() {
         List<Blog> list = new ArrayList<Blog>();
         Blog blog = null;
         for (int i = 0; i < 10; i++) {
@@ -101,8 +125,13 @@ public class BlogTest {
     }
 
     public static void main(String[] args) {
-//            insetBlogs();
-        List<Blog> blogs= listAllBlogs();
-        updateBlogs(blogs);
+//        insetBlogs();
+//        List<Blog> blogs= listAllBlogs();
+//        updateBlogs(blogs);
+
+        List<Blog> blogs = listBlogsBySqlGram();
+
+
+
     }
 }
