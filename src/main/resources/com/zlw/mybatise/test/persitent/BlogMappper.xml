@@ -9,15 +9,15 @@
     <resultMap type="com.zlw.mybatise.test.domain.Blog" id="blogMap">
         <id column="id" property="id"/>
         <result column="title" property="title"/>
-        <!--<result column="author" property="funkyNumber"/>
-        <result column="roundingMode" property="roundingMode"/>-->
+        <result column="author" property="funkyNumber"/>
+        <result column="roundingMode" property="roundingMode"/>
     </resultMap>
-
-    <sql id="blogColumns">
-        ${alias}.id as id,
-        ${alias}.title as title,
-        ${alias}.author_id as authorId
-    </sql>
+    <!--
+        <sql id="blogColumns">
+            ${alias}.id as id,
+            ${alias}.title as title,
+            ${alias}.author_id as authorId
+        </sql>-->
 
     <!--
         flushCache  1清除缓存和二级缓存
@@ -39,10 +39,22 @@
              resultSetType="FORWARD_ONLY">
      </select>-->
 
-    <select id="listBlogs" resultMap="blogMap">
+    <!--<select id="listBlogs" resultMap="blogMap">
         select * from blog
     </select>
-
+    -->
+    <select id="listBlogsByTrim" resultMap="blogMap">
+        select * from blog
+        <!--<trim prefix="where" prefixOverrides="and">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="title != null">
+                and title like concat(#{title},'%')
+            </if>
+        </trim>-->
+    </select>
+    <!--
     <select id="getBlogById" resultType="Blog">
         select * from Blog where id = #{id}
     </select>
@@ -71,7 +83,7 @@
             <property name="alias" value="b"/>
             <property name="include_target" value="sometable"/>
         </include>
-    </select>
+    </select>-->
 
 
     <!--
@@ -88,14 +100,14 @@
             keyColumn=""
             useGeneratedKeys=""
             timeout="20">-->
-    <insert id="insertBlog" parameterType="Blog" useGeneratedKeys="true"
+    <!--<insert id="insertBlog" parameterType="Blog" useGeneratedKeys="true"
             keyProperty="id">
       insert into blog (id, title,author_id) values (
 	    	#{id}, #{title}, #{authorId}
 	    )
-    </insert>
+    </insert>-->
 
-    <insert id="insertBlogBySelectKey" parameterType="Blog"
+    <!--<insert id="insertBlogBySelectKey" parameterType="Blog"
             useGeneratedKeys="true"
             keyProperty="id">
         <selectKey
@@ -113,7 +125,8 @@
         update blog set
         title=#{title}
         where id=#{id}
-    </update>
+    </update>-->
+
 
 
     <!--<cache-ref namespace="c"></cache-ref>-->

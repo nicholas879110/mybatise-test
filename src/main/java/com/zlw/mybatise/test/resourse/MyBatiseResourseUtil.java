@@ -1,9 +1,12 @@
 package com.zlw.mybatise.test.resourse;
 
+import com.zlw.mybatise.test.domain.Blog;
+import com.zlw.mybatise.test.persitent.BlogMapper;
 import org.apache.ibatis.datasource.pooled.PooledDataSourceFactory;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
@@ -25,33 +28,37 @@ import java.util.Properties;
 public class MyBatiseResourseUtil {
 
     public static SqlSessionFactory getSessionFactory() throws IOException {
-
         String resource = "mybatise-config.xml";
         InputStream inputStream = Resources.getResourceAsStream(resource);
         SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
         return sqlSessionFactory;
+    }
 
+    public static void excute() {
+        SqlSessionFactory sqlSessionFactory= null;
+        try {
+            sqlSessionFactory = getSessionFactory();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-//        SqlSession session = sqlSessionFactory.openSession();
-//        try {
-//            Blog blog = (Blog) session.selectOne("org.mybatis.example.BlogMapper.selectBlog", 101);
-//
-//        } finally {
-//            session.close();
-//        }
-//
-//
-//        SqlSession session1 = sqlSessionFactory.openSession();
-//        try {
-//            BlogMapper mapper = session1.getMapper(BlogMapper.class);
-//            Blog blog = mapper.selectBlog(101);
-//        } finally {
-//            session.close();
-//        }
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
+            Blog blog = (Blog) session.selectOne("org.mybatis.example.BlogMapper.selectBlog", 101);
+        } finally {
+            session.close();
+        }
+        SqlSession session1 = sqlSessionFactory.openSession();
+        try {
+            BlogMapper mapper = session1.getMapper(BlogMapper.class);
+            Blog blog = mapper.getBlogById(101);
+        } finally {
+            session.close();
+        }
     }
 
 
-    public static void getSessionFactoryFromCode(){
+    public static void getSessionFactoryFromCode() {
 //        DataSource dataSource = BlogDataSourceFactory.getBlogDataSource();
         Properties properties = new Properties();
         properties.setProperty("driver", "com.mysql.jdbc.Driver");

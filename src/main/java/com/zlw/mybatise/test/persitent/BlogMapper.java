@@ -19,6 +19,8 @@ public interface BlogMapper {
 
     List<Blog> listBlogs();
 
+    List<Blog> listBlogsByTrim(Blog blog);
+
     void insertBlog(Blog blog);
 
     void updateBlog(Blog blog);

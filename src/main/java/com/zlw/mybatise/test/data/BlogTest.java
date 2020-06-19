@@ -40,6 +40,35 @@ public class BlogTest {
     }
 
 
+
+
+    public static List<Blog> listBlogsByTrim() {
+        SqlSessionFactory sqlSessionFactory = null;
+        try {
+            sqlSessionFactory = MyBatiseResourseUtil.getSessionFactory();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
+            Blog param=new Blog();
+            param.setId(1);
+            param.setTitle("title");
+            List<Blog> blogs = session.selectList("com.zlw.mybatise.test.persitent.BlogMapper.listBlogsByTrim",param);
+            for (Blog blog : blogs) {
+                System.out.println("blog:" + blog.getId() + "," + blog.getTitle());
+                System.out.println("--------------------------------------");
+            }
+            return blogs;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return new ArrayList<Blog>();
+    }
+
     public static List<Blog> listAllBlogs() {
         SqlSessionFactory sqlSessionFactory = null;
         try {
@@ -126,10 +155,10 @@ public class BlogTest {
 
     public static void main(String[] args) {
 //        insetBlogs();
-//        List<Blog> blogs= listAllBlogs();
+        List<Blog> blogs= listBlogsByTrim();
 //        updateBlogs(blogs);
 
-        List<Blog> blogs = listBlogsBySqlGram();
+//        List<Blog> blogs = listBlogsBySqlGram();
 
 
 
