@@ -1,6 +1,8 @@
 package com.zlw.mybatise.test.persitent;
 
+import com.zlw.mybatise.test.domain.Author;
 import com.zlw.mybatise.test.domain.Blog;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -14,8 +16,11 @@ import java.util.List;
  */
 public interface BlogMapper {
 
-//    @Select("SELECT * FROM blog WHERE id = #{id}")
+    //    @Select("SELECT * FROM blog WHERE id = #{id}")
     Blog getBlogById(int id);
+
+    @Select({"SELECT * FROM blog WHERE id = #{id}"})
+    Blog getBlogByIdAnnotation(int id);
 
     List<Blog> listBlogs();
 
@@ -24,5 +29,8 @@ public interface BlogMapper {
     void insertBlog(Blog blog);
 
     void updateBlog(Blog blog);
+
+    void insertAuthor(Author author);
+
 
 }

@@ -15,6 +15,7 @@ public class Author {
     private String password;
     private String email;
     private String bio;
+    private String favouriteSection;
 
     public Integer getId() {
         return id;
@@ -54,5 +55,13 @@ public class Author {
 
     public void setBio(String bio) {
         this.bio = bio;
+    }
+
+    public String getFavouriteSection() {
+        return favouriteSection;
+    }
+
+    public void setFavouriteSection(String favouriteSection) {
+        this.favouriteSection = favouriteSection;
     }
 }

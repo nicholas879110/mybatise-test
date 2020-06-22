@@ -43,17 +43,18 @@
         select * from blog
     </select>
     -->
-    <select id="listBlogsByTrim" resultMap="blogMap">
+    <!--<select id="listBlogsByTrim" resultMap="blogMap">
         select * from blog
-        <!--<trim prefix="where" prefixOverrides="and">
+        where id=#{id}
+        &lt;!&ndash;<trim prefix="where" prefixOverrides="and">
             <if test="id != null">
                 and id=#{id}
             </if>
             <if test="title != null">
                 and title like concat(#{title},'%')
             </if>
-        </trim>-->
-    </select>
+        </trim>&ndash;&gt;
+    </select>-->
     <!--
     <select id="getBlogById" resultType="Blog">
         select * from Blog where id = #{id}
@@ -107,7 +108,7 @@
 	    )
     </insert>-->
 
-    <!--<insert id="insertBlogBySelectKey" parameterType="Blog"
+  <!-- <insert id="insertBlogBySelectKey" parameterType="Blog"
             useGeneratedKeys="true"
             keyProperty="id">
         <selectKey
@@ -118,14 +119,24 @@
         insert into blog (id, title,author_id) values (
         #{id}, #{title}, #{authorId}
         )
-    </insert>
+    </insert>-->
 
+    <!--<insert id="insertAuthor">
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            select  FLOOR(RAND()*1000000)
+        </selectKey>
+        insert into author
+        (id, username, password, email,bio, favourite_section)
+        values
+        (#{id}, #{username}, #{password}, #{email}, #{bio}, #{favouriteSection,jdbcType=VARCHAR})
+    </insert>-->
 
-    <update id="updateBlog" parameterType="Blog">
-        update blog set
-        title=#{title}
-        where id=#{id}
-    </update>-->
+    <!--
+       <update id="updateBlog" parameterType="Blog">
+           update blog set
+           title=#{title}
+           where id=#{id}
+       </update>-->
 
 
 
