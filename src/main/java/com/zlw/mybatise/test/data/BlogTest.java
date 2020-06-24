@@ -3,6 +3,7 @@ package com.zlw.mybatise.test.data;
 import com.zlw.mybatise.test.domain.Author;
 import com.zlw.mybatise.test.domain.Blog;
 import com.zlw.mybatise.test.resourse.MyBatiseResourseUtil;
+import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
@@ -150,6 +151,7 @@ public class BlogTest {
         try {
 //            List<Blog> blogs = session.selectList("com.zlw.mybatise.test.persitent.BlogMapper.listBlogsBySqlGram");
             List<Blog> blogs = session.selectList("com.zlw.mybatise.test.persitent.BlogMapper.listBlogsBySqlIncludGram");
+            Configuration configuration=session.getConfiguration();
             for (Blog blog : blogs) {
                 System.out.println("blog:" + blog.getId() + "," + blog.getTitle());
                 System.out.println("--------------------------------------");
@@ -186,6 +188,9 @@ public class BlogTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             Blog blog = session.selectOne("com.zlw.mybatise.test.persitent.BlogMapper.getBlogByIdAnnotation", 1);
+            Blog blog1 = session.selectOne("com.zlw.mybatise.test.persitent.Blog1Mapper.getBlogByIdAnnotation", 1);
+
+            Configuration configuration=session.getConfiguration();
             System.out.println("blog:" + blog.getId() + "," + blog.getTitle());
             System.out.println("--------------------------------------");
             return blog;
