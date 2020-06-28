@@ -48,13 +48,13 @@ public class MyBatiseResourseUtil {
         } finally {
             session.close();
         }
-        SqlSession session1 = sqlSessionFactory.openSession();
-        try {
-            BlogMapper mapper = session1.getMapper(BlogMapper.class);
-            Blog blog = mapper.getBlogById(101);
-        } finally {
-            session.close();
-        }
+//        SqlSession session1 = sqlSessionFactory.openSession();
+//        try {
+//            BlogMapper mapper = session1.getMapper(BlogMapper.class);
+//            Blog blog = mapper.getBlogById(101);
+//        } finally {
+//            session.close();
+//        }
     }
 
 

@@ -187,8 +187,11 @@ public class BlogTest {
 
         SqlSession session = sqlSessionFactory.openSession();
         try {
-            Blog blog = session.selectOne("com.zlw.mybatise.test.persitent.BlogMapper.getBlogByIdAnnotation", 1);
-            Blog blog1 = session.selectOne("com.zlw.mybatise.test.persitent.Blog1Mapper.getBlogByIdAnnotation", 1);
+            Blog param=new Blog();
+            param.setId(1);
+            param.setTitle("title-0");
+            Blog blog = session.selectOne("com.zlw.mybatise.test.persitent.BlogMapper.getBlogByIdAnnotation", param);
+//            Blog blog1 = session.selectOne("com.zlw.mybatise.test.persitent.Blog1Mapper.getBlogByIdAnnotation", 1);
 
             Configuration configuration=session.getConfiguration();
             System.out.println("blog:" + blog.getId() + "," + blog.getTitle());

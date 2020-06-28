@@ -20,9 +20,9 @@ import java.util.List;
 public interface BlogMapper {
 
     //    @Select("SELECT * FROM blog WHERE id = #{id}")
-    Blog getBlogById(int id);
+//    Blog getBlogById(int id);
 
-//    @Select({"SELECT * FROM blog WHERE id = #{id}"})
+//    @Select({"SELECT * FROM blog WHERE id = #{id} and title = #{title}"})
 //    @Select({
 //       "<script>" +
 //               "SELECT * FROM blog " +
@@ -34,7 +34,7 @@ public interface BlogMapper {
 //        "where id =${id} "
 //     })
     @SelectProvider(type=BlogProvider.class,method="getBlogByIdAnnotation")
-    Blog getBlogByIdAnnotation(@Param(value="id")Integer id);
+    Blog getBlogByIdAnnotation(Blog blog);
 
     List<Blog> listBlogs();
 
