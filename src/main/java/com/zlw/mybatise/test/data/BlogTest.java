@@ -208,7 +208,7 @@ public class BlogTest {
     public static void main(String[] args) {
 //        insetAuthor();
 //        insetBlogs();
-        getBlogByIdAnnotation();
+//        getBlogByIdAnnotation();
 
 //        List<Blog> blogs= listBlogsByTrim();
 //        updateBlogs(blogs);
