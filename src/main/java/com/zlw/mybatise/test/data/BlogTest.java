@@ -57,7 +57,7 @@ public class BlogTest {
             author.setFavouriteSection("足球");
             author.setUsername("zhs");
             author.setPassword("123456");
-            session.insert("com.zlw.mybatise.test.persitent.BlogMapper.insertAuthor", author);
+            session.insert("com.zlw.mybatise.test.persitent.AuthorMapper.insertAuthor", author);
             session.commit();
         } finally {
             session.close();
@@ -206,7 +206,7 @@ public class BlogTest {
     }
 
     public static void main(String[] args) {
-//        insetAuthor();
+        insetAuthor();
 //        insetBlogs();
 //        getBlogByIdAnnotation();
 

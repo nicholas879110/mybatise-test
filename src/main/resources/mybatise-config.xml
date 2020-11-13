@@ -62,6 +62,6 @@
     </environments>
     <mappers>
         <mapper resource="com/zlw/mybatise/test/persitent/BlogMappper.xml"/>
-        <!--<mapper class="com.zlw.mybatise.test.persitent.Blog1Mapper"/>-->
+        <mapper resource="com/zlw/mybatise/test/persitent/AuthorMappper.xml"/>
     </mappers>
 </configuration>
